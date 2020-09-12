@@ -1,0 +1,143 @@
+<p-dialog [header]="headerProfessionalExperience" [(visible)]="displayProfessionalExperience" modal="true" showEffect="fade">
+    <form [formGroup]="professionalExperienceForm" (ngSubmit)="onSubmitProfessionalExperience($event)">
+        <!--<form [formGroup]="professionalReferenceForm">-->
+        <!--institution y event_type-->
+        <div class="p-fluid p-formgrid p-grid">
+            
+            <div class="p-field p-col">
+                <label for="position">Cargo</label>
+                <input id="position" type="text" size="30" pInputText pKeyFilter="alpha" maxlength="30"
+                type="text" pInputText placeholder="Cargo"  formControlName="position">
+                <div *ngIf="professionalExperienceForm.get('position').errors && professionalExperienceForm.get('position').touched">
+                    <p-message severity="error" text="El nombre del cargo requerido"
+                               *ngIf="professionalExperienceForm.get('position').hasError('required')"></p-message>
+                </div>
+            </div>
+
+            <div class="p-field p-col">
+                <label for="employer">Empleador</label>
+                <input id="employer" type="text" size="30" pInputText pKeyFilter="alpha" maxlength="30"
+                type="text" pInputText placeholder="Empleador"  formControlName="employer">
+                <div *ngIf="professionalExperienceForm.get('employer').errors && professionalExperienceForm.get('employer').touched">
+                    <p-message severity="error" text="El campo es requerido"
+                               *ngIf="professionalExperienceForm.get('employer').hasError('required')"></p-message>
+                </div>
+            </div>
+        </div>
+        <div class="p-fluid p-formgrid p-grid">
+            
+            <div class="p-field p-col">
+                <label for="job_description">Descripcion del Cargo</label>
+                <input id="job_description" type="text" size="30" pInputText pKeyFilter="alpha" maxlength="30"
+                type="text" pInputText placeholder="Descripcion"  formControlName="job_description">
+                <div *ngIf="professionalExperienceForm.get('job_description').errors && professionalExperienceForm.get('job_description').touched">
+                    <p-message severity="error" text="El nombre del cargo requerido"
+                               *ngIf="professionalExperienceForm.get('job_description').hasError('required')"></p-message>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="p-grid" style="width:250px;margin-bottom:10px">
+            <div class="p-col-12"><p-checkbox  formControlName="current_work" fname="group1" value="current_work" label="Trabaja actualmente aqui" [(ngModel)]="current_work"></p-checkbox></div>
+        </div>
+
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col">
+                <label for="start_date">Fecha Inicio</label>
+                <p-calendar id="start_date" formControlName="start_date" [monthNavigator]="true" [showIcon]="true"
+                    [yearNavigator]="true" [yearRange]="validationStart_date" dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd">
+                </p-calendar>
+                <div *ngIf="professionalExperienceForm.get('start_date').errors && professionalExperienceForm.get('start_date').touched">
+                    <p-message severity="error" text="La fecha es requerido"
+                        *ngIf="professionalExperienceForm.get('start_date').hasError('required')"></p-message>
+                </div>
+            </div>
+
+            <div class="p-field p-col" *ngIf='current_work'>
+                <label for="end_date">Fecha Fin</label>
+                <p-calendar id="end_date" formControlName="end_date" [monthNavigator]="true" [showIcon]="true"
+                    [yearNavigator]="true" [yearRange]="validationFinish_date" dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd">
+                </p-calendar>
+                <div *ngIf="professionalExperienceForm.get('end_date').errors && professionalExperienceForm.get('end_date').touched">
+                    <p-message severity="error" text="La fecha es requerido"
+                        *ngIf="professionalExperienceForm.get('end_date').hasError('required')"></p-message>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-field p-col"  *ngIf='current_work'>
+            <label for="reason_leave">Motivo de salida</label>
+            <input id="reason_leave" type="text" size="30" pInputText pKeyFilter="alpha" maxlength="30"
+            type="text" pInputText placeholder="Motivo"  formControlName="reason_leave">
+            <div *ngIf="professionalExperienceForm.get('reason_leave').errors && professionalExperienceForm.get('reason_leave').touched">
+                <p-message severity="error" text="El campo es requerido"
+                           *ngIf="professionalExperienceForm.get('reason_leave').hasError('required')"></p-message>
+            </div>
+        </div>
+       
+         
+        <!--Botones-->
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col">
+                <button type="submit" pButton icon="pi pi-save" class="ui-button-success" label="Guardar"></button>
+            </div>
+        </div>
+    </form>
+</p-dialog>
+
+    
+    <p-confirmDialog [style]="{width: '425px'}">
+    </p-confirmDialog>
+    <p-toast key="tst"></p-toast>
+    <div class="p-grid ui-fluid">
+        <div class="p-lg-12 p-md-12 p-sm-12">
+            <p-message severity="info" text="No hay registros" *ngIf="professionalExperience.length==0"></p-message>
+            <p-table #dt [columns]="colsProfessionalExperience" styleClass="ui-table-cars" [value]="professionalExperience"
+                     [paginator]="true"
+                     [rows]="5"
+                     [responsive]="true"
+                     dataKey="id"
+                     *ngIf="professionalExperience.length>0">
+                <ng-template pTemplate="caption">
+                    <div class="p-grid">
+                        <div class="p-lg-12 p-md-12 p-sm-12">
+                            <h1>Experiencias Profesionales</h1>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns"
+                            [pSortableColumn]="col.field"
+                            [ngSwitch]="col.field">
+                            {{col.header}}
+                            <p-sortIcon [field]="col.field"></p-sortIcon>
+                        </th>
+                        <th style="width: 8em; text-align: center;">
+                            <button pButton type="button" icon="pi pi-user-plus"
+                                    class="ui-button-success"
+                                    (click)="selectProfessionalExperience(null)"></button>
+                        </th>
+                    </tr>
+                    
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData>
+                    <tr>
+                        <td>{{rowData.employer}}</td>
+                        <td>{{rowData.position}}</td>
+                        <td>{{rowData.job_description}}</td>
+                        <td>{{rowData.reason_leave}}</td>
+                        <td>{{rowData.start_date}}</td>
+                        <td>{{rowData.end_date}}</td>
+                        <td>
+                            <button pButton type="button" class="ui-button-primary" icon="pi pi-user-edit"
+                                    style="margin-right: .5em" (click)="selectProfessionalExperience(rowData);"></button>
+                            <button pButton type="button" class="ui-button-danger" (click)="deleteProfessionalExperience(rowData)"
+                                    icon="pi pi-trash"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>

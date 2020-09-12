@@ -1,0 +1,141 @@
+<p-dialog [header]="headerDialogProfessionalReference" [(visible)]="displayProfessionalReference" modal="true" showEffect="fade">
+    <form [formGroup]="professionalReferenceForm" (ngSubmit)="onSubmitProfessionalReference($event)">
+        <!--<form [formGroup]="professionalReferenceForm">-->
+        <!--institution y event_type-->
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col">
+                <label for="institution">Institución</label>
+                <p-dropdown id="institution" [options]="institutions" formControlName="institution" filter="true">
+                    <ng-template let-institution pTemplate="selectedItem">
+                        <span style="vertical-align:middle; margin-left: .5em">{{institution.label}}</span>
+                    </ng-template>
+                    <ng-template let-institution pTemplate="item">
+                        <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+                            <div style="font-size:14px;float:right;margin-top:4px">{{institution.label}}</div>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+                <div *ngIf="professionalReferenceForm.get('institution').errors && professionalReferenceForm.get('institution').touched">
+                    <p-message severity="error" text="La institución es requerido"
+                               *ngIf="professionalReferenceForm.get('institution').hasError('required')"></p-message>
+                </div>
+            </div>
+            <div class="p-field p-col">
+                <label for="position">Cargo</label>
+                <input id="position" type="text" size="30" pInputText pKeyFilter="alpha" maxlength="30"
+                       formControlName="position">
+                <div *ngIf="professionalReferenceForm.get('position').errors && professionalReferenceForm.get('position').touched">
+                    <p-message severity="error" text="El nombre del Cargos requerido"
+                               *ngIf="professionalReferenceForm.get('position').hasError('required')"></p-message>
+                </div>
+            </div>
+        </div>
+        <!--contact-->
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col">
+                <label for="contact">Contacto</label>
+                <input id="contact" type="text" size="30" pInputText pKeyFilter="alpha" maxlength="30"
+                       formControlName="contact">
+                <div *ngIf="professionalReferenceForm.get('contact').errors && professionalReferenceForm.get('contact').touched">
+                    <p-message severity="error" text="El Contacto es requerido"
+                               *ngIf="professionalReferenceForm.get('contact').hasError('required')"></p-message>
+                </div>
+            </div>
+        </div>
+        
+            <div class="p-field p-col">
+                <label for="phone">Telefono</label>
+                <input id="phone" type="text" size="30" pInputText pKeyFilter="alpha" maxlength="30"
+                formControlName="phone">
+         <div *ngIf="professionalReferenceForm.get('phone').errors && professionalReferenceForm.get('phone').touched">
+             <p-message severity="error" text="El numero es requerido"
+                        *ngIf="professionalReferenceForm.get('phone').hasError('required')"></p-message>
+                </div>
+            </div>
+        
+            
+        <!--Botones-->
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col">
+                <button type="submit" pButton icon="pi pi-save" class="ui-button-success" label="Guardar"></button>
+            </div>
+        </div>
+    </form>
+</p-dialog>
+
+    
+    <p-confirmDialog [style]="{width: '425px'}">
+    </p-confirmDialog>
+    <p-toast key="tst"></p-toast>
+    <div class="p-grid ui-fluid">
+        <div class="p-lg-12 p-md-12 p-sm-12">
+            <p-message severity="info" text="No hay registros" *ngIf="professionalReferences.length==0"></p-message>
+            <p-table #dt [columns]="colsProfessionalReference" styleClass="ui-table-cars" [value]="professionalReferences"
+                     [paginator]="true"
+                     [rows]="5"
+                     [responsive]="true"
+                     dataKey="id"
+                     *ngIf="professionalReferences.length>0">
+                <ng-template pTemplate="caption">
+                    <div class="p-grid">
+                        <div class="p-lg-12 p-md-12 p-sm-12">
+                            <h1>Referencias Profesionales</h1>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns"
+                            [pSortableColumn]="col.field"
+                            [ngSwitch]="col.field">
+                            {{col.header}}
+                            <p-sortIcon [field]="col.field"></p-sortIcon>
+                        </th>
+                        <th style="width: 8em; text-align: center;">
+                            <button pButton type="button" icon="pi pi-user-plus"
+                                    class="ui-button-success"
+                                    (click)="selectProfessionalReference(null)"></button>
+                        </th>
+                    </tr>
+                    <!--Botones <tr>
+                       <th *ngFor="let col of columns" [ngSwitch]="col.field" style="padding: .5em;">
+                           <input *ngSwitchCase="'institution'" pInputText type="text"
+                                  placeholder="Buscar por número de identificación"
+                                  class="ui-column-filter" style="width: 100%; margin-top: 0;"
+                                  (input)="dt.filter($event.target.value, col.field, 'contains')">
+                           <input *ngSwitchCase="'first_lastname'" pInputText type="text"
+                                  placeholder="Buscar por el primer apellido"
+                                  class="ui-column-filter" style="width: 100%; margin-top: 0;"
+                                  (input)="dt.filter($event.target.value, col.field, 'contains')">
+                           <input *ngSwitchCase="'first_name'" pInputText type="text"
+                                  placeholder="Buscar por el primer nombre"
+                                  class="ui-column-filter" style="width: 100%; margin-top: 0;"
+                                  (input)="dt.filter($event.target.value, col.field, 'contains')">
+                           <input *ngSwitchCase="'email'" pInputText type="text"
+                                  placeholder="Buscar por correo"
+                                  class="ui-column-filter" style="width: 100%; margin-top: 0;"
+                                  (input)="dt.filter($event.target.value, col.field, 'contains')">
+                       </th>
+    
+                       <th style="width: 8em;">
+                       </th>
+                   </tr>-->
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData>
+                    <tr>
+                        <td>{{rowData.institution.name}}</td>
+                        <td>{{rowData.position}}</td>
+                        <td>{{rowData.contact}}</td>
+                        <td>{{rowData.phone}}</td>
+                        
+                        <td>
+                            <button pButton type="button" class="ui-button-primary" icon="pi pi-search"
+                                    style="margin-right: .5em" (click)="selectProfessionalReference(rowData);"></button>
+                            <button pButton type="button" class="ui-button-danger" (click)="deleteProfessionalReference(rowData)"
+                                    icon="pi pi-trash"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
